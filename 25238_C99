@@ -1,0 +1,14 @@
+#include <stdio.h>
+
+int main() {
+	float a;
+	float b;
+	scanf("%f %f", &a, &b);
+	if (a - a * b / 100 < 100) {
+		printf("%d",1);
+	}
+	else {
+		printf("%d", 0);
+	}
+	return 0;
+}
