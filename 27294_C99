@@ -1,0 +1,9 @@
+#include <stdio.h>
+
+int main() {
+	int h, d;
+	scanf("%d %d", &h, &d);
+	if ((h<=11 or 17<=h) or d == 1) { printf("280"); }
+	else { printf("320"); }
+	return 0;
+}
