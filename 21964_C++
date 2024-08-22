@@ -1,0 +1,9 @@
+#include <iostream>
+#include <string>
+int main(){
+    int a;
+    std::string t;
+    std::cin >> a;
+    std::cin >> t;
+    std::cout << t.substr(t.length() - 5) << std::endl;
+}
