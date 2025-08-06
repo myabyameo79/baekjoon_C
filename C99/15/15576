@@ -1,0 +1,135 @@
+#include <stdio.h>
+#include <math.h>
+#include <string.h>
+#include <stdbool.h>
+
+typedef struct{
+	double rNumber;
+	double iNumber;
+}complex;
+
+complex add(complex c1, complex c2){
+	complex res;
+	res.rNumber=c1.rNumber+c2.rNumber;
+	res.iNumber=c1.iNumber+c2.iNumber;
+	return res;
+}
+
+complex mul(complex c1, complex c2){
+	complex res;
+	res.rNumber=c1.rNumber*c2.rNumber-c1.iNumber*c2.iNumber;
+	res.iNumber=c1.iNumber*c2.rNumber+c1.rNumber*c2.iNumber;
+	return res;
+}
+
+complex minus(complex c1, complex c2){
+	complex res;
+	res.rNumber=c1.rNumber-c2.rNumber;
+	res.iNumber=c1.iNumber-c2.iNumber;
+	return res;
+}
+
+complex div(complex c1, int d){
+	complex res;
+	res.rNumber=c1.rNumber/d;
+	res.iNumber=c1.iNumber/d;
+	return res;
+}
+
+void swap(complex* li,int a,int b){
+	complex tmp=li[b];
+	li[b]=li[a];
+	li[a]=tmp;
+}
+
+void fft(complex* li,int n,bool inv){
+	for(int i=0;i<n;i++){
+		int rev=0;
+		for(int j=1,target=i;j<n;j<<=1,target>>=1){
+			rev=(rev<<1)+(target&1);
+		}
+		if(i<rev){
+			swap(li,i,rev);
+		}
+	}
+	for(int le=2;le<=n;le<<=1){
+		double angle=2*M_PI/le*(inv ? -1:1);
+		complex w;
+		w.rNumber=cos(angle);
+		w.iNumber=sin(angle);
+		for(int i=0;i<n;i+=le){
+			complex e;
+			e.rNumber=1;
+			e.iNumber=0;
+			for(int j=0;j<le/2;j++){
+				complex even=li[i+j];
+				complex odd=mul(li[i+j+le/2],e);
+				li[i+j]=add(even,odd);
+				li[i+j+le/2]=minus(even,odd);
+				e=mul(e,w);
+			}
+		}
+	}
+	if(inv){
+		for(int i=0;i<n;i++){
+			li[i]=div(li[i],n);
+		}
+	}
+}
+
+void inner(complex* lia,complex* lib,int n){
+	for(int i=0;i<n;i++){
+		lia[i]=mul(lia[i],lib[i]);
+	}
+}
+
+complex lia[2097152];
+complex lib[2097152];
+int ans2[2097152];
+
+int main(){
+	char input1[1000005], input2[1000005];
+	scanf("%s %s", &input1, &input2);
+	int la = strlen(input1);
+	int lb = strlen(input2);
+	
+	int n=1;
+	while(n<la+lb){
+		n<<=1;
+	}
+
+	for (int i = 0; i < la; i++) {
+		lia[i].rNumber = input1[la - 1 - i] - '0';
+		lia[i].iNumber = 0;
+	}
+	for (int i = la; i < n; i++) {
+		lia[i].rNumber = lia[i].iNumber = 0;
+	}
+	
+	for (int i = 0; i < lb; i++) {
+		lib[i].rNumber = input2[lb - 1 - i] - '0';
+		lib[i].iNumber = 0;
+	}
+	for (int i = lb; i < n; i++) {
+		lib[i].rNumber = lib[i].iNumber = 0;
+	}
+	fft(lia,n,false);
+	fft(lib,n,false);
+	inner(lia,lib,n);
+	fft(lia,n,true);
+	for(int i=0;i<n;i++){
+		ans2[i]=(int)round(lia[i].rNumber);
+	}
+	for(int i=0;i<n-1;i++){
+		ans2[i+1]+=ans2[i]/10;
+		ans2[i]%=10;
+	}
+	int idx = n - 1;
+	while (idx > 0 && ans2[idx] == 0) {
+    	idx--;
+	}
+	for (int i = idx; i >= 0; i--) {
+    	printf("%d", ans2[i]);
+	}
+	printf("\n");
+}
