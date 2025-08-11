@@ -1,0 +1,68 @@
+#include <stdio.h>
+
+int main(){
+	int ans[10001];
+	int lia[10001];
+	int lena=0;
+	for(int i=0;i<10001;i++){
+		lia[i]=0;
+	}
+	for(int i=0;i<10001;i++){
+		char c;
+		scanf("%c", &c);
+		if(c==' '){
+			break;
+		}
+		lia[i]=(int)c-48;
+		lena++;
+	}
+	int numa[10001];
+	for(int i=0;i<10001;i++){
+		numa[i]=0;
+	}
+	for(int i=0;i<lena;i++){
+		numa[i+10001-lena]=lia[i];
+	}
+	int lib[10001];
+	int lenb=0;
+	int real2=1;
+	for(int i=0;i<10001;i++){
+		lib[i]=0;
+	}
+	for(int i=0;i<10001;i++){
+		char c;
+		scanf("%c", &c);
+		if(c=='\n'){
+			break;
+		}
+		lib[i]=(int)c-48;
+		lenb++;
+	}
+	int numb[10001];
+	for(int i=0;i<10001;i++){
+		numb[i]=0;
+	}
+	for(int i=0;i<lenb;i++){
+		numb[i+10001-lenb]=lib[i];
+	}
+	for(int i=0;i<10001;i++){
+		ans[i]=0;
+	}
+	for(int i=10000;i>-1;i--){
+		ans[i]=numa[i]+numb[i];
+	}
+	for(int i=10000;i>0;i--){
+		ans[i-1]+=ans[i]/10;
+		ans[i]%=10;
+	}
+	int k;
+	for(int i=0;i<10001;i++){
+		if(ans[i]!=0){
+			k=i;
+			break;
+		}
+	}
+	for(int i=k;i<10001;i++){
+		printf("%d",ans[i]);
+	}
+}
